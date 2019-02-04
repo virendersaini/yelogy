@@ -18,4 +18,8 @@ class ProductDetail extends Model
     public function cart_package(){
         return $this->hasOne('App\ProductCart','package_id');
     }
+     public function product()
+    {
+        return $this->belongsTo('App\Product','product_id');
+    }
 }

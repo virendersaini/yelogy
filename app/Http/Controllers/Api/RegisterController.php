@@ -590,7 +590,7 @@ public function login(Request $request)
       }   
       //dd($request->toArray());
       $address = Address::where('id',$request->delivery_address_id)->pluck('address')->first();
-      $carts = ProductCart::with('package')->where('customer_id',$request->customer_id)->get()->toArray();
+      $carts = ProductCart::with('package.product')->where('customer_id',$request->customer_id)->get()->toArray();
        $status=false;
       if($carts){
         $orderdata =[
@@ -609,6 +609,7 @@ public function login(Request $request)
           $orderdetail =[
             'order_id'=>$order->id,
             'product_id'=>$cart['product_id'],
+             'product_name'=>$cart['package']['product']['name'],
             'quantity'=>$cart['quantity'],
             'packet_weight'=>$cart['package']['packet_weight'],
             'price'=>$cart['package']['price'],
@@ -637,7 +638,7 @@ public function login(Request $request)
       return response()->json($response, 200);
   }
   public function myorders(Request $request){
-    $data = Order::where('customer_id',$request->customer_id)->get(['id','order_status','item_count','total_amount','created_at'])->toArray();
+    $data = Order::where('customer_id',$request->customer_id)->get(['id','order_status','item_count','total_amount','delivery_charge','created_at'])->toArray();
     if($data){
           $response['status'] = true;
           $response['message'] = 'My order list.';
@@ -677,14 +678,14 @@ public function login(Request $request)
       return response()->json($response, 200);
   }
   public function cancelOrder(Request $request){
-    $data = Order::where('id',$request->order_id)->delete();
+    $data = Order::where('id',$request->order_id)->update(['order_status'=>'cencelled']);
     if($data){
-        OrderDetail::where('order_id',$request->order_id)->delete();
+         // OrderDetail::where('order_id',$request->order_id)->delete();
           $response['status'] = true;
-          $response['message'] = 'order deleted.';
+          $response['message'] = 'Your order has been cancelled.';
       }else{
           $response['status'] = false;
-          $response['message'] = 'something went wrong. try again.';
+          $response['message'] = 'something went wrong.try again.';
       }
       return response()->json($response, 200);
   }
