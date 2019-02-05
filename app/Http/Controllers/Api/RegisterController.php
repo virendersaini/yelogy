@@ -667,7 +667,7 @@ public function login(Request $request)
     $data = OrderDetail::where(['order_id'=>$request->order_id])->get();
     if($data){
           $response['status'] = true;
-          $response['image_path'] = url('/public/uploads/productdetail/');
+          $response['image_path'] = url('/public/uploads/product/');
           $response['message'] = 'order items list.';
           $response['data'] = $data;
       }else{
