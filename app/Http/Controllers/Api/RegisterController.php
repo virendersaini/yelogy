@@ -678,7 +678,7 @@ public function login(Request $request)
       return response()->json($response, 200);
   }
   public function cancelOrder(Request $request){
-    $data = Order::where('id',$request->order_id)->update(['order_status'=>'cencelled']);
+    $data = Order::where('id',$request->order_id)->update(['order_status'=>'cancelled']);
     if($data){
          // OrderDetail::where('order_id',$request->order_id)->delete();
           $response['status'] = true;
